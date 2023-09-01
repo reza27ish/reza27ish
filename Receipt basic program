@@ -1,0 +1,58 @@
+def get_float_input(prompt):
+    while True:
+        try:
+            return float(input(prompt))
+        except ValueError:
+            print("Please enter a valid number!")
+
+def get_shared_cost(total_cost, num_people):
+    return total_cost / num_people
+
+def main():
+    people_count = int(input("How many people are there? "))
+    
+    # Getting details for each person
+    people_details = {}
+    for i in range(people_count):
+        name = input(f"Enter the name of person {i + 1}: ")
+        order_count = int(input(f"How many items did {name} order? "))
+        total_cost = 0
+        for j in range(order_count):
+            item_name = input(f"Enter name of item {j + 1}: ")
+            item_cost = get_float_input(f"Enter cost of {item_name}: ")
+            total_cost += item_cost
+        people_details[name] = total_cost
+    
+    # Check for shared items
+    shared_items = int(input("How many shared items are there? "))
+    shared_cost = 0
+    for i in range(shared_items):
+        item_name = input(f"Enter name of shared item {i + 1}: ")
+        item_cost = get_float_input(f"Enter cost of {item_name}: ")
+        shared_cost += item_cost
+
+    # Divide shared item cost amongst people
+    shared_cost_per_person = get_shared_cost(shared_cost, people_count)
+    for person in people_details:
+        people_details[person] += shared_cost_per_person
+
+    # Tax and tip calculations
+    tax = get_float_input("Enter the total tax amount: ")
+    tax_per_person = get_shared_cost(tax, people_count)
+    tip_percentage = get_float_input("Enter the desired tip percentage (e.g., 15 for 15%): ")
+    tip_multiplier = tip_percentage / 100
+
+    # Print out details
+    print("\nBill Details:")
+    for person, cost in people_details.items():
+        total_cost_with_tax = cost + tax_per_person
+        tip_amount = total_cost_with_tax * tip_multiplier
+        final_total = total_cost_with_tax + tip_amount
+        print(f"{person}:")
+        print(f"  Food Cost: ${cost:.2f}")
+        print(f"  Tax: ${tax_per_person:.2f}")
+        print(f"  Tip: ${tip_amount:.2f}")
+        print(f"  Total: ${final_total:.2f}\n")
+
+if __name__ == "__main__":
+    main()
